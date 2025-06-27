@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hypixel Skyblock Setup Tracker</title>
+  <style>
+    :root {
+      --accent: #ffcc00;
+      --bg-dark: #1a1a1a;
+      --bg-card-dark: rgba(255, 255, 255, 0.05);
+      --text-dark: #f0f0f0;
+      --highlight: #4caf50;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: var(--bg-card-dark);
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+      width: 95%;
+      max-width: 800px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 15px;
+      margin: 20px;
+      flex-wrap: wrap;
+    }
+
+    .nav button {
+      padding: 10px 15px;
+      background-color: var(--bg-card-dark);
+      color: var(--accent);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .nav button:hover {
+      background-color: #3a3a3a;
+    }
+
+    h2 {
+      color: var(--accent);
+    }
+
+    .category {
+      margin-top: 20px;
+    }
+
+    .category h3 {
+      margin-bottom: 10px;
+      color: var(--highlight);
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      background: #2e2e2e;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .progress-bar-container {
+      background: #333;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      height: 18px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: var(--highlight);
+      transition: width 0.4s ease;
+    }
+
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .buttons button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      background-color: var(--accent);
+      color: #000;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <button onclick="showSetup('tank')">Tank</button>
+    <button onclick="showSetup('mage')">Mage</button>
+    <button onclick="showSetup('archer')">Archer</button>
+    <button onclick="showSetup('berserker')">Berserker</button>
+    <button onclick="showSetup('healer')">Healer</button>
+  </div>
+
+  <div class="container">
+    <h2 id="setup-title">Tank Setup</h2>
+    <div class="progress-bar-container"><div id="progress" class="progress-bar"></div></div>
+    <form id="taskList"></form>
+    <div class="buttons">
+      <button onclick="exportChecklist()">Export</button>
+      <button onclick="importChecklist()">Import</button>
+    </div>
+  </div>
+
+  <script>
+    const setups = {
+      tank: {
+        Armor: [
+          ["", "Necron's Diamond Helmet"],
+          ["", "Skeleton Master Chestplate"],
+          ["", "Necron's Leggings (Jasper)"],
+          ["", "Maxor Boots"],
+        ],
+        Weapons: [
+          ["", "Hyperion"],
+          ["", "10-Star Soul Eater Terminator"],
+          ["", "Axe of the Shredded (Aggro)"],
+          ["", "Soul Whip"],
+          ["", "Last Breath"],
+        ],
+        Accessories: [
+          ["", "Gloomlock Grimoire"],
+          ["", "Bonzo's Mask"],
+          ["", "Spirit Mask"],
+          ["", "Gauntlet of Contagion"],
+          ["", "Adaptive Belt"],
+          ["", "Shadow Assassin Cloak"],
+          ["", "Bone Necklace"],
+        ],
+        Pets: [
+          ["", "Golden Dragon (1B Bank)"],
+          ["", "Legendary Baby Yeti"],
+          ["", "Black Cat Pet"],
+        ],
+        Stats: [
+          ["", "1200 Magical Power (MP)"]
+        ]
+      },
+      mage: {
+        Armor: [], Weapons: [], Accessories: [], Pets: [], Stats: []
+      },
+      archer: {
+        Armor: [], Weapons: [], Accessories: [], Pets: [], Stats: []
+      },
+      berserker: {
+        Armor: [], Weapons: [], Accessories: [], Pets: [], Stats: []
+      },
+      healer: {
+        Armor: [
+          ["", "Necron's Diamond Helmet"],
+          ["", "Skeleton Master Chestplate"],
+          ["", "Necron's Leggings (Jasper)"],
+          ["", "Maxor Boots"]
+        ],
+        Weapons: [
+          ["", "Hyperion"],
+          ["", "10-Star Soul Eater Terminator"],
+          ["", "Soul Whip"],
+          ["", "Last Breath"]
+        ],
+        Accessories: [
+          ["", "Bonzo's Mask"],
+          ["", "Spirit Mask"],
+          ["", "Bone Necklace"],
+          ["", "Gauntlet of Contagion"],
+          ["", "Adaptive Belt"],
+          ["", "Shadow Assassin Cloak"]
+        ],
+        Pets: [
+          ["", "Phoenix Pet"],
+          ["", "Golden Dragon (1B Bank)"],
+          ["", "Black Cat Pet"]
+        ],
+        Stats: [
+          ["", "1200 Magical Power (MP)"]
+        ]
+      }
+    };
+
+    function showSetup(role) {
+      document.getElementById('setup-title').innerText = role.charAt(0).toUpperCase() + role.slice(1) + ' Setup';
+      const taskList = document.getElementById('taskList');
+      taskList.innerHTML = '';
+
+      for (const [category, items] of Object.entries(setups[role])) {
+        const div = document.createElement('div');
+        div.className = 'category';
+        div.innerHTML = `<h3>${category}</h3>`;
+
+        for (const [_, label] of items) {
+          const id = label.replace(/\s+/g, '-');
+          div.innerHTML += `
+            <label>
+              <input type="checkbox" id="${id}" />
+              ${label}
+            </label>
+          `;
+        }
+        taskList.appendChild(div);
+      }
+      setupListeners();
+    }
+
+    function setupListeners() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(cb => {
+        const id = cb.id;
+        cb.checked = localStorage.getItem(id) === 'true';
+        cb.onchange = () => {
+          localStorage.setItem(id, cb.checked);
+          updateProgress();
+        };
+      });
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const all = document.querySelectorAll('input[type="checkbox"]');
+      const checked = [...all].filter(cb => cb.checked).length;
+      const percent = (checked / all.length) * 100;
+      document.getElementById('progress').style.width = percent + '%';
+    }
+
+    function exportChecklist() {
+      const all = document.querySelectorAll('input[type="checkbox"]');
+      const save = {};
+      all.forEach(cb => save[cb.id] = cb.checked);
+      const data = JSON.stringify(save);
+      navigator.clipboard.writeText(data).then(() => alert('Checklist copied to clipboard!'));
+    }
+
+    function importChecklist() {
+      const input = prompt('Paste your saved checklist data:');
+      if (!input) return;
+      try {
+        const save = JSON.parse(input);
+        for (const [id, val] of Object.entries(save)) {
+          localStorage.setItem(id, val);
+        }
+        showSetup(document.getElementById('setup-title').innerText.split(' ')[0].toLowerCase());
+      } catch (e) {
+        alert('Invalid data');
+      }
+    }
+
+    showSetup('tank');
+  </script>
+</body>
+</html>
