@@ -101,12 +101,7 @@
     }
 
     .buttons button {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 6px;
-      background-color: var(--accent);
-      color: #000;
-      cursor: pointer;
+      display: none;
     }
   </style>
 </head>
@@ -123,13 +118,12 @@
     <h2 id="setup-title">Tank Setup</h2>
     <div class="progress-bar-container"><div id="progress" class="progress-bar"></div></div>
     <form id="taskList"></form>
-    <div class="buttons">
-      <button onclick="exportChecklist()">Export</button>
-      <button onclick="importChecklist()">Import</button>
-    </div>
+    <div class="buttons"></div>
   </div>
 
   <script>
+// JS portion is large and unchanged except setups update, continue in next cell
+
     const setups = {
       tank: {
         Armor: [
@@ -165,23 +159,26 @@
       },
       mage: {
         Armor: [
-          ["", "Necrotic 2/4 Storm with Loving Chestplate and Necrotic Wither Goggles"],
-          ["", "Ancient Full Storm's Armor with Legion V, 1 Onyx, 1 Sapphire"],
+          ["", "10* Necrotic 2/4 Storm with Loving Chestplate and Necrotic Wither Goggles"],
+          ["", "10* Ancient Full Storm's Armor with Legion V, Full Perfects (1 Onyx, 1 Sapphire)"],
           ["", "Diamond Necron Head"]
         ],
         Weapons: [
-          ["", "Hyperion"],
+          ["", "Hyperion (Chimera V)"],
           ["", "Midas' Sword Chimera V 250M"],
-          ["", "Chimera 3-5 Ragnarok Axe"]
+          ["", "Chimera 3-5 Ragnarok Axe"],
+          ["", "Last Breath"],
+          ["", "Ice Spray Wand"],
+          ["", "Spring Boots"]
         ],
         Accessories: [
           ["", "The One Enchanted Necklace"],
-          ["", "Balloon Snake (Optional for Intelligence)"],
-          ["", "Bone Necklace (Optional)"]
+          ["", "Balloon Snake (Alternative to Bone Necklace for INT)"],
+          ["", "Placeable Mana Orb (Any)"]
         ],
         Pets: [
           ["", "Golden Dragon with Shelmet"],
-          ["", "Ender Dragon (or Gdrag if high gold collection)"],
+          ["", "Ender Dragon (Optional: Gdrag full time if high gold collection)"],
           ["", "Spirit Mask"],
           ["", "Bonzo's Mask"]
         ],
@@ -194,22 +191,26 @@
           ["", "10* Diamond Necron Head"],
           ["", "10* Skeleton Master Chestplate"],
           ["", "10* Necron's Leggings"],
-          ["", "10* Necron's Boots or Maxor's Boots"]
+          ["", "10* Necron's Boots or Maxor's Boots (Legion V, Strong Mana 7+, Perfect Jaspers)"]
         ],
         Weapons: [
           ["", "Hyperion"],
-          ["", "10* Soul Eater Terminator"],
+          ["", "10* SE Terminator"],
           ["", "10* Duplex P7 Snipe 4 Terminator"],
-          ["", "Chimera 3-5 Ragnarok Axe"]
+          ["", "Chimera 3-5 Ragnarok Axe"],
+          ["", "Death Bow (Swarm V)"],
+          ["", "Last Breath"]
         ],
         Accessories: [
           ["", "The One Enchanted Necklace"],
           ["", "Gauntlet of Contagion"],
           ["", "Spirit Mask"],
-          ["", "Bonzo's Mask"]
+          ["", "Bonzo's Mask"],
+          ["", "Sword of Bad Health"],
+          ["", "Weirder Tuba (Optional)"]
         ],
         Pets: [
-          ["", "2x Golden Dragon (Shelmet & Remedies)"],
+          ["", "2x Golden Dragon (1 Shelmet, 1 Remedies)"],
           ["", "Ender Dragon"],
           ["", "Phoenix"]
         ],
@@ -222,11 +223,11 @@
           ["", "10* Diamond Necron Head"],
           ["", "10* Skeleton Master Chestplate"],
           ["", "10* Necron's Leggings"],
-          ["", "10* Necron's Boots or Maxor's Boots"]
+          ["", "10* Necron's Boots or Maxor's Boots (Legion V, Strong Mana 7+, Perfect Jaspers)"]
         ],
         Weapons: [
           ["", "Hyperion"],
-          ["", "10* Soul Eater Terminator"],
+          ["", "10* SE Terminator"],
           ["", "10* Duplex P7 Snipe 4 Terminator"],
           ["", "Chimera 3-5 Ragnarok Axe"]
         ],
@@ -234,7 +235,9 @@
           ["", "The One Enchanted Necklace"],
           ["", "Gauntlet of Contagion"],
           ["", "Spirit Mask"],
-          ["", "Bonzo's Mask"]
+          ["", "Bonzo's Mask"],
+          ["", "Sword of Bad Health"],
+          ["", "Weirder Tuba (Optional)"]
         ],
         Pets: [
           ["", "Golden Dragon with Shelmet"],
@@ -319,28 +322,6 @@
       const checked = [...all].filter(cb => cb.checked).length;
       const percent = (checked / all.length) * 100;
       document.getElementById('progress').style.width = percent + '%';
-    }
-
-    function exportChecklist() {
-      const all = document.querySelectorAll('input[type="checkbox"]');
-      const save = {};
-      all.forEach(cb => save[cb.id] = cb.checked);
-      const data = JSON.stringify(save);
-      navigator.clipboard.writeText(data).then(() => alert('Checklist copied to clipboard!'));
-    }
-
-    function importChecklist() {
-      const input = prompt('Paste your saved checklist data:');
-      if (!input) return;
-      try {
-        const save = JSON.parse(input);
-        for (const [id, val] of Object.entries(save)) {
-          localStorage.setItem(id, val);
-        }
-        showSetup(document.getElementById('setup-title').innerText.split(' ')[0].toLowerCase());
-      } catch (e) {
-        alert('Invalid data');
-      }
     }
 
     showSetup('tank');
