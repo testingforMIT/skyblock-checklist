@@ -291,7 +291,7 @@
         div.innerHTML = `<h3>${category}</h3>`;
 
         for (const [_, label] of items) {
-          const id = label.replace(/\s+/g, '-');
+          const id = role + '-' + label.replace(/\s+/g, '-');
           div.innerHTML += `
             <label>
               <input type="checkbox" id="${id}" />
@@ -305,7 +305,7 @@
     }
 
     function setupListeners() {
-      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      const checkboxes = document.querySelectorAll(`#taskList input[type="checkbox"]`);
       checkboxes.forEach(cb => {
         const id = cb.id;
         cb.checked = localStorage.getItem(id) === 'true';
